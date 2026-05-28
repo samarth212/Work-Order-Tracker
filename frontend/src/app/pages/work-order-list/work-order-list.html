@@ -1,1 +1,16 @@
-<p>work-order-list works!</p>
+<h2>Work Orders</h2>
+
+<ul>
+  @for (workOrder of workOrders; track workOrder.id) {
+    <li>
+      <a [routerLink]="['/workorders', workOrder.id]">
+        {{ workOrder.title }}
+      </a>
+
+      <p>
+        Status: {{ workOrder.status }} | Priority: {{ workOrder.priority }} | Assigned To:
+        {{ workOrder.assignedTo }}
+      </p>
+    </li>
+  }
+</ul>
