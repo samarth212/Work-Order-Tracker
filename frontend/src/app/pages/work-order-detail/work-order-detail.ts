@@ -1,9 +1,22 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { WorkOrder } from '../../models/work-order';
+import { WorkOrderService } from '../../services/work-order';
 
 @Component({
   selector: 'app-work-order-detail',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './work-order-detail.html',
   styleUrl: './work-order-detail.css',
 })
-export class WorkOrderDetail {}
+export class WorkOrderDetail {
+  workOrder: WorkOrder | undefined;
+
+  constructor(
+    private route: ActivatedRoute,
+    private workOrderService: WorkOrderService,
+  ) {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.workOrder = this.workOrderService.getWorkOrderById(id);
+  }
+}

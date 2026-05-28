@@ -1,1 +1,15 @@
-<p>work-order-detail works!</p>
+<a routerLink="/workorders">Back to Work Orders</a>
+
+@if (workOrder) {
+  <h2>{{ workOrder.title }}</h2>
+
+  <p><strong>Description:</strong> {{ workOrder.description }}</p>
+  <p><strong>Status:</strong> {{ workOrder.status }}</p>
+  <p><strong>Priority:</strong> {{ workOrder.priority }}</p>
+  <p><strong>Assigned To:</strong> {{ workOrder.assignedTo }}</p>
+  <p><strong>Created By:</strong> {{ workOrder.createdBy }}</p>
+  <p><strong>Created At:</strong> {{ workOrder.createdAt }}</p>
+  <p><strong>Due Date:</strong> {{ workOrder.dueDate }}</p>
+} @else {
+  <p>Work order not found.</p>
+}
