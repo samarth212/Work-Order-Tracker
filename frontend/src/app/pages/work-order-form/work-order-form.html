@@ -1,1 +1,96 @@
-<p>work-order-form works!</p>
+<a routerLink="/workorders">Back to Work Orders</a>
+
+<div [hidden]="submitted">
+  <form #workOrderForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        required
+        [(ngModel)]="newWorkOrder.title"
+        name="title"
+      />
+
+      <label for="priority">Priority</label>
+      <select
+        class="form-control"
+        id="priority"
+        required
+        [(ngModel)]="newWorkOrder.priority"
+        name="priority"
+      >
+        @for (priority of priorities; track $index) {
+          <option [value]="priority">{{ priority }}</option>
+        }
+      </select>
+
+      <label for="description">Description</label>
+      <textarea
+        class="form-control"
+        id="description"
+        required
+        [(ngModel)]="newWorkOrder.description"
+        name="description"
+      ></textarea>
+
+      <label for="status">Status</label>
+      <select
+        class="form-control"
+        id="status"
+        required
+        [(ngModel)]="newWorkOrder.status"
+        name="status"
+      >
+        <option value="Open">Open</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+
+      <label for="assignedTo">Assigned To</label>
+      <input
+        type="text"
+        class="form-control"
+        id="assignedTo"
+        required
+        [(ngModel)]="newWorkOrder.assignedTo"
+        name="assignedTo"
+      />
+
+      <label for="createdBy">Created By</label>
+      <input
+        type="text"
+        class="form-control"
+        id="createdBy"
+        required
+        [(ngModel)]="newWorkOrder.createdBy"
+        name="createdBy"
+      />
+
+      <label for="createdAt">Created At</label>
+      <input
+        type="date"
+        class="form-control"
+        id="createdAt"
+        required
+        [(ngModel)]="newWorkOrder.createdAt"
+        name="createdAt"
+      />
+
+      <label for="dueDate">Due Date</label>
+      <input
+        type="date"
+        class="form-control"
+        id="dueDate"
+        required
+        [(ngModel)]="newWorkOrder.dueDate"
+        name="dueDate"
+      />
+
+      <button type="submit" class="btn btn-primary" [disabled]="!workOrderForm.form.valid">
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
