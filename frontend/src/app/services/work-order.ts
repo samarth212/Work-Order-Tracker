@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WorkOrder } from '../models/work-order';
 
-// service injectable to hold work order data
 @Injectable({
   providedIn: 'root',
 })
@@ -43,11 +42,25 @@ export class WorkOrderService {
     },
   ];
 
+  private newId = 4;
+
   getWorkOrders(): WorkOrder[] {
     return this.workOrders;
   }
 
   getWorkOrderById(id: number): WorkOrder | undefined {
     return this.workOrders.find((workOrder) => workOrder.id === id);
+  }
+
+  addWorkOrder(workOrder: Omit<WorkOrder, 'id'>): WorkOrder {
+    const newWorkOrder: WorkOrder = {
+      ...workOrder,
+      id: this.newId,
+    };
+
+    this.newId++;
+    this.workOrders.push(newWorkOrder);
+
+    return newWorkOrder;
   }
 }
