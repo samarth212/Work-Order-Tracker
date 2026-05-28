@@ -1,16 +1,60 @@
-<h2>Work Orders</h2>
+<main class="px-6 py-10">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <h2 class="text-3xl font-semibold tracking-tight text-white">Work Orders</h2>
+        <p class="mt-2 text-sm text-zinc-400">Review open requests and current assignments.</p>
+      </div>
 
-<ul>
-  @for (workOrder of workOrders; track workOrder.id) {
-    <li>
-      <a [routerLink]="['/workorders', workOrder.id]">
-        {{ workOrder.title }}
+      <a
+        routerLink="/workorders/new"
+        class="inline-flex rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300"
+      >
+        New Work Order
       </a>
+    </div>
 
-      <p>
-        Status: {{ workOrder.status }} | Priority: {{ workOrder.priority }} | Assigned To:
-        {{ workOrder.assignedTo }}
-      </p>
-    </li>
-  }
-</ul>
+    <ul class="grid gap-4">
+      @for (workOrder of workOrders; track workOrder.id) {
+        <li class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-5 shadow-xl shadow-black/10 transition hover:border-zinc-700">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <a
+                [routerLink]="['/workorders', workOrder.id]"
+                class="text-lg font-semibold text-white transition hover:text-cyan-300"
+              >
+                {{ workOrder.title }}
+              </a>
+              <p class="mt-2 text-sm leading-6 text-zinc-400">
+                Assigned to {{ workOrder.assignedTo }}
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-xs font-medium">
+              <span class="rounded-full border border-zinc-700 px-3 py-1 text-zinc-300">
+                {{ workOrder.status }}
+              </span>
+              <span
+                class="rounded-full border px-3 py-1"
+                [class.border-green-700]="workOrder.priority === 'Low'"
+                [class.bg-green-950]="workOrder.priority === 'Low'"
+                [class.text-green-300]="workOrder.priority === 'Low'"
+                [class.border-yellow-700]="workOrder.priority === 'Medium'"
+                [class.bg-yellow-950]="workOrder.priority === 'Medium'"
+                [class.text-yellow-300]="workOrder.priority === 'Medium'"
+                [class.border-red-700]="workOrder.priority === 'High'"
+                [class.bg-red-950]="workOrder.priority === 'High'"
+                [class.text-red-300]="workOrder.priority === 'High'"
+                [class.border-purple-700]="workOrder.priority === 'Urgent'"
+                [class.bg-purple-950]="workOrder.priority === 'Urgent'"
+                [class.text-purple-300]="workOrder.priority === 'Urgent'"
+              >
+                {{ workOrder.priority }}
+              </span>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+  </div>
+</main>
