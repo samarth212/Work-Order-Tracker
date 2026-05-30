@@ -63,4 +63,21 @@ export class WorkOrderService {
 
     return newWorkOrder;
   }
+
+  updateWorkOrder(id: number, workOrder: Omit<WorkOrder, 'id'>): WorkOrder | undefined {
+    const index = this.workOrders.findIndex((existingWorkOrder) => existingWorkOrder.id === id);
+
+    if (index === -1) {
+      return undefined;
+    }
+
+    const updatedWorkOrder: WorkOrder = {
+      ...workOrder,
+      id,
+    };
+
+    this.workOrders[index] = updatedWorkOrder;
+
+    return updatedWorkOrder;
+  }
 }

@@ -16,7 +16,7 @@
       [hidden]="submitted"
       class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/20"
     >
-      <form #workOrderForm="ngForm" (ngSubmit)="onSubmit(workOrderForm)">
+      <form #workOrderForm="ngForm" (ngSubmit)="onSubmit()">
         <div class="space-y-5">
           <label for="title" class="block text-sm font-medium text-zinc-300">Title</label>
           <input
@@ -117,13 +117,13 @@
             </div>
           </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary w-full rounded-md bg-cyan-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
-        [disabled]="!workOrderForm.form.valid"
-      >
-        Submit
-      </button>
+          <button
+            type="submit"
+            class="btn btn-primary w-full rounded-md bg-cyan-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
+            [disabled]="!workOrderForm.form.valid"
+          >
+            Submit
+          </button>
         </div>
       </form>
     </div>
@@ -160,7 +160,7 @@
               [class.bg-purple-950]="submittedWorkOrder?.priority === 'Urgent'"
               [class.text-purple-300]="submittedWorkOrder?.priority === 'Urgent'"
             >
-            {{ submittedWorkOrder?.priority }}
+              {{ submittedWorkOrder?.priority }}
             </span>
           </div>
         </div>
@@ -202,13 +202,23 @@
         </div>
       </div>
 
-      <button
-        type="button"
-        class="btn btn-primary mt-6 w-full rounded-md bg-cyan-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300"
-        (click)="addAnother()"
-      >
-        Add Another
-      </button>
+      <div class="mt-6 grid gap-3 sm:grid-cols-2">
+        <button
+          type="button"
+          class="btn btn-primary rounded-md border border-zinc-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800"
+          (click)="editSubmittedWorkOrder()"
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary rounded-md bg-cyan-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-300"
+          (click)="addAnother()"
+        >
+          Add Another
+        </button>
+      </div>
     </div>
   </div>
 </main>
