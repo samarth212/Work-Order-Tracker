@@ -6,15 +6,11 @@ import { WorkOrderForm } from './pages/work-order-form/work-order-form';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'workorders',
+    redirectTo: 'dashboard',
     pathMatch: 'full',
   },
   {
     path: 'dashboard',
-    component: Dashboard,
-  },
-  {
-    path: 'workorders',
     component: Dashboard,
   },
   {
