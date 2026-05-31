@@ -7,7 +7,7 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // mock data 
-var workorders = new List<WorkOrder>
+var workOrders = new List<WorkOrder>
 {
     new(1, "Fix login issue", "Users are having trouble logging into the system.", "Open", "High", "Samarth", "Manager", "2026-05-27", "2026-06-01"),
     new(2, "Update dashboard table", "Add filtering and sorting to the dashboard table.", "In Progress", "Medium", "Alex", "Manager", "2026-05-26", "2026-06-03"),
@@ -21,21 +21,68 @@ app.MapGet("/", () => "WorkOrder API is running!");
 
 app.MapGet("/workorders", () =>
 {
-    return workorders;
+    return workOrders;
 });
 
 app.MapGet('/workorder/{id}', (int id) => {
 
-    WorkOrder? workorder = workorders.FirstOrDefault(w => w.Id = id);
+    WorkOrder? workOrder = workOrders.FirstOrDefault(w => w.Id == id);
 
-    if (workorder == null){
+    if (workOrder == null){
         return Results.NotFound();
     }
-    else {
-        return Results.Ok(workorder);
-    }
+    
+    return Results.Ok(workOrder);
+    
 
 });
+
+app.MapPost('/workorders', (WorkOrder newWorkOrder) => {
+    int nextId = workOrders.Count == 0 ? 1 : workOrders.Max(w => w.Id) + 1;
+
+    WorkOrder workOrder = new WorkOrder(
+        nextId,
+        newWorkOrder.Title,
+        newWorkOrder.Description,
+        newWorkOrder.Status,
+        newWorkOrder.Priority,
+        newWorkOrder.AssignedTo,
+        newWorkOrder.CreatedBy,
+        newWorkOrder.CreatedAt,
+        newWorkOrder.DueDate);
+
+    workOrders.add(workOrder)
+
+    return Results.Created($"/workorders/{workOrder.id}", workOrder);
+
+});
+
+app.MapPut('/workorders/{id}', (int id, WorkOrder updatedWorkOrders) => {
+
+    int i = workorders.FindIndex(w => w.Id == id);
+
+    if(i = -1){
+        return Results.NotFound()
+    }
+
+    WorkOrder workOrder = new WorkOrder(
+        i,
+        updatedWorkOrders.Title,
+        updatedWorkOrders.Description,
+        updatedWorkOrders.Status,
+        updatedWorkOrders.Priority,
+        updatedWorkOrders.AssignedTo,
+        updatedWorkOrders.CreatedBy,
+        updatedWorkOrders.CreatedAt,
+        updatedWorkOrders.DueDate);
+    
+    workorders[i] = workOrder;
+
+    return Results.Ok(workOrder)
+
+});
+
+
 
 
 
