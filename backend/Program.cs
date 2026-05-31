@@ -24,7 +24,7 @@ app.MapGet("/workorders", () =>
     return workOrders;
 });
 
-app.MapGet('/workorder/{id}', (int id) => {
+app.MapGet("/workorder/{id}", (int id) => {
 
     WorkOrder? workOrder = workOrders.FirstOrDefault(w => w.Id == id);
 
@@ -37,7 +37,7 @@ app.MapGet('/workorder/{id}', (int id) => {
 
 });
 
-app.MapPost('/workorders', (WorkOrder newWorkOrder) => {
+app.MapPost("/workorders", (WorkOrder newWorkOrder) => {
     int nextId = workOrders.Count == 0 ? 1 : workOrders.Max(w => w.Id) + 1;
 
     WorkOrder workOrder = new WorkOrder(
@@ -57,11 +57,11 @@ app.MapPost('/workorders', (WorkOrder newWorkOrder) => {
 
 });
 
-app.MapPut('/workorders/{id}', (int id, WorkOrder updatedWorkOrders) => {
+app.MapPut("/workorders/{id}", (int id, WorkOrder updatedWorkOrders) => {
 
-    int i = workorders.FindIndex(w => w.Id == id);
+    int i = workOrders.FindIndex(w => w.Id == id);
 
-    if(i = -1){
+    if(i == -1){
         return Results.NotFound()
     }
 
@@ -82,9 +82,22 @@ app.MapPut('/workorders/{id}', (int id, WorkOrder updatedWorkOrders) => {
 
 });
 
+app.MapDelete("/workorders/{id}", (int id) => {
+
+    int i = workOrders.FindIndex(w => w.Id == id);
+
+    if(i == -1){
+        return Results.NotFound();
+    }
+
+    workOrders.RemoveAt(i);
+
+    return Results.NoContent();
 
 
+});
 
+app.Run();
 
 
 record WorkOrder(int Id, 
