@@ -66,7 +66,7 @@ app.MapPut("/workorders/{id}", (int id, WorkOrder updatedWorkOrders) => {
     }
 
     WorkOrder workOrder = new WorkOrder(
-        i,
+        id,
         updatedWorkOrders.Title,
         updatedWorkOrders.Description,
         updatedWorkOrders.Status,
