@@ -10,6 +10,18 @@
   <p><strong>Created By:</strong> {{ workOrder.createdBy }}</p>
   <p><strong>Created At:</strong> {{ workOrder.createdAt }}</p>
   <p><strong>Due Date:</strong> {{ workOrder.dueDate }}</p>
+  <label for="status" class="block text-sm font-medium text-zinc-300">Update Status</label>
+  <select
+    class="form-control mt-2 w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+    id="status"
+    required
+    [(ngModel)]="workOrder.status"
+    name="status"
+  >
+    @for (status of statuses; track $index) {
+      <option [value]="status">{{ status }}</option>
+    }
+  </select>
 } @else {
   <p>Work order not found.</p>
 }
