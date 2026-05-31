@@ -24,7 +24,7 @@ app.MapGet("/workorders", () =>
     return workOrders;
 });
 
-app.MapGet("/workorder/{id}", (int id) => {
+app.MapGet("/workorders/{id}", (int id) => {
 
     WorkOrder? workOrder = workOrders.FirstOrDefault(w => w.Id == id);
 
@@ -51,9 +51,9 @@ app.MapPost("/workorders", (WorkOrder newWorkOrder) => {
         newWorkOrder.CreatedAt,
         newWorkOrder.DueDate);
 
-    workOrders.add(workOrder)
+    workOrders.Add(workOrder);
 
-    return Results.Created($"/workorders/{workOrder.id}", workOrder);
+    return Results.Created($"/workorders/{workOrder.Id}", workOrder);
 
 });
 
@@ -62,7 +62,7 @@ app.MapPut("/workorders/{id}", (int id, WorkOrder updatedWorkOrders) => {
     int i = workOrders.FindIndex(w => w.Id == id);
 
     if(i == -1){
-        return Results.NotFound()
+        return Results.NotFound();
     }
 
     WorkOrder workOrder = new WorkOrder(
@@ -76,9 +76,9 @@ app.MapPut("/workorders/{id}", (int id, WorkOrder updatedWorkOrders) => {
         updatedWorkOrders.CreatedAt,
         updatedWorkOrders.DueDate);
     
-    workorders[i] = workOrder;
+    workOrders[i] = workOrder;
 
-    return Results.Ok(workOrder)
+    return Results.Ok(workOrder);
 
 });
 
