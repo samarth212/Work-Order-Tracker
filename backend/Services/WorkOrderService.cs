@@ -66,7 +66,7 @@ public class WorkOrderService {
     }
 
     public bool Delete(int id){
-        WorkOrder? workOrder = GetById(id)
+        WorkOrder? workOrder = GetById(id);
 
         if(workOrder == null){
             return false;
