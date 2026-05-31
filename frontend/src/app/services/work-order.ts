@@ -1,83 +1,32 @@
 import { Injectable } from '@angular/core';
 import { WorkOrder } from '../models/work-order';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WorkOrderService {
-  // mock data
-  private workOrders: WorkOrder[] = [
-    {
-      id: 1,
-      title: 'Fix login issue',
-      description: 'Users are having trouble logging into the system.',
-      status: 'Open',
-      priority: 'High',
-      assignedTo: 'Samarth',
-      createdBy: 'Manager',
-      createdAt: '2026-05-27',
-      dueDate: '2026-06-01',
-    },
-    {
-      id: 2,
-      title: 'Update dashboard table',
-      description: 'Add filtering and sorting to the dashboard table.',
-      status: 'In Progress',
-      priority: 'Medium',
-      assignedTo: 'Alex',
-      createdBy: 'Manager',
-      createdAt: '2026-05-26',
-      dueDate: '2026-06-03',
-    },
-    {
-      id: 3,
-      title: 'Clean old database records',
-      description: 'Remove or archive old test records from the database.',
-      status: 'Completed',
-      priority: 'Low',
-      assignedTo: 'Maya',
-      createdBy: 'Admin',
-      createdAt: '2026-05-25',
-      dueDate: '2026-05-30',
-    },
-  ];
+  private apiUrl = 'http://localhost:5056/workorders';
+  constructor(private http: HttpClient) {}
 
-  private newId = 4;
-
-  getWorkOrders(): WorkOrder[] {
-    return this.workOrders;
+  getWorkOrders(): Observable<WorkOrder[]> {
+    return this.http.get<WorkOrder[]>(this.apiUrl);
   }
 
-  getWorkOrderById(id: number): WorkOrder | undefined {
-    return this.workOrders.find((workOrder) => workOrder.id === id);
+  getWorkOrderById(id: number): Observable<WorkOrder> {
+    return this.http.get<WorkOrder>(`${this.apiUrl}/${id}`);
   }
 
-  addWorkOrder(workOrder: Omit<WorkOrder, 'id'>): WorkOrder {
-    const newWorkOrder: WorkOrder = {
-      ...workOrder,
-      id: this.newId,
-    };
-
-    this.newId++;
-    this.workOrders.push(newWorkOrder);
-
-    return newWorkOrder;
+  addWorkOrder(workOrder: Omit<WorkOrder, 'id'>): Observable<WorkOrder> {
+    return this.http.post<WorkOrder>(this.apiUrl, workOrder);
   }
 
-  updateWorkOrder(id: number, workOrder: Omit<WorkOrder, 'id'>): WorkOrder | undefined {
-    const index = this.workOrders.findIndex((existingWorkOrder) => existingWorkOrder.id === id);
+  updateWorkOrder(id: number, workOrder: WorkOrder): Observable<WorkOrder> {
+    return this.http.put<WorkOrder>(`${this.apiUrl}/${id}`, workOrder);
+  }
 
-    if (index === -1) {
-      return undefined;
-    }
-
-    const updatedWorkOrder: WorkOrder = {
-      ...workOrder,
-      id,
-    };
-
-    this.workOrders[index] = updatedWorkOrder;
-
-    return updatedWorkOrder;
+  deleteWorkOrder(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
