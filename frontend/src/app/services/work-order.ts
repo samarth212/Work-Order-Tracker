@@ -22,7 +22,7 @@ export class WorkOrderService {
     return this.http.post<WorkOrder>(this.apiUrl, workOrder);
   }
 
-  updateWorkOrder(id: number, workOrder: WorkOrder): Observable<WorkOrder> {
+  updateWorkOrder(id: number, workOrder: Omit<WorkOrder, 'id'>): Observable<WorkOrder> {
     return this.http.put<WorkOrder>(`${this.apiUrl}/${id}`, workOrder);
   }
 

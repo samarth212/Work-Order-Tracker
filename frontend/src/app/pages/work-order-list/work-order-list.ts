@@ -12,6 +12,8 @@ import { WorkOrderService } from '../../services/work-order';
 export class WorkOrderList {
   workOrders: WorkOrder[] = [];
   constructor(private workOrderService: WorkOrderService) {
-    this.workOrders = this.workOrderService.getWorkOrders();
+    this.workOrderService.getWorkOrders().subscribe((workOrders) => {
+      this.workOrders = workOrders;
+    });
   }
 }

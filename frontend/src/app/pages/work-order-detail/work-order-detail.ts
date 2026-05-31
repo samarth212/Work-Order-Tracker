@@ -19,6 +19,8 @@ export class WorkOrderDetail {
     private workOrderService: WorkOrderService,
   ) {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.workOrder = this.workOrderService.getWorkOrderById(id);
+    this.workOrderService.getWorkOrderById(id).subscribe((workOrder) => {
+      this.workOrder = workOrder;
+    });
   }
 }

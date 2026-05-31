@@ -23,15 +23,20 @@ export class WorkOrderForm {
 
   onSubmit() {
     if (this.editingSubmittedWorkOrder && this.submittedWorkOrder) {
-      this.submittedWorkOrder =
-        this.workOrderService.updateWorkOrder(this.submittedWorkOrder.id, this.newWorkOrder) ??
-        this.submittedWorkOrder;
+      this.workOrderService
+        .updateWorkOrder(this.submittedWorkOrder.id, this.newWorkOrder)
+        .subscribe((workOrder) => {
+          this.submittedWorkOrder = workOrder;
+          this.editingSubmittedWorkOrder = false;
+          this.submitted = true;
+        });
     } else {
-      this.submittedWorkOrder = this.workOrderService.addWorkOrder(this.newWorkOrder);
+      this.workOrderService.addWorkOrder(this.newWorkOrder).subscribe((workOrder) => {
+        this.submittedWorkOrder = workOrder;
+        this.editingSubmittedWorkOrder = false;
+        this.submitted = true;
+      });
     }
-
-    this.editingSubmittedWorkOrder = false;
-    this.submitted = true;
   }
 
   addAnother() {
