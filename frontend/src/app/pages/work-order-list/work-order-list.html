@@ -14,47 +14,57 @@
       </a>
     </div>
 
-    <ul class="grid gap-4">
-      @for (workOrder of workOrders; track workOrder.id) {
-        <li class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-5 shadow-xl shadow-black/10 transition hover:border-zinc-700">
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <a
-                [routerLink]="['/workorders', workOrder.id]"
-                class="text-lg font-semibold text-white transition hover:text-cyan-300"
-              >
-                {{ workOrder.title }}
-              </a>
-              <p class="mt-2 text-sm leading-6 text-zinc-400">
-                Assigned to {{ workOrder.assignedTo }}
-              </p>
-            </div>
+    @if (loading) {
+      <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
+        Loading work orders...
+      </div>
+    } @else if (errorMessage) {
+      <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
+        {{ errorMessage }}
+      </div>
+    } @else {
+      <ul class="grid gap-4">
+        @for (workOrder of workOrders; track workOrder.id) {
+          <li class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-5 shadow-xl shadow-black/10 transition hover:border-zinc-700">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <a
+                  [routerLink]="['/workorders', workOrder.id]"
+                  class="text-lg font-semibold text-white transition hover:text-cyan-300"
+                >
+                  {{ workOrder.title }}
+                </a>
+                <p class="mt-2 text-sm leading-6 text-zinc-400">
+                  Assigned to {{ workOrder.assignedTo }}
+                </p>
+              </div>
 
-            <div class="flex flex-wrap gap-2 text-xs font-medium">
-              <span class="rounded-full border border-zinc-700 px-3 py-1 text-zinc-300">
-                {{ workOrder.status }}
-              </span>
-              <span
-                class="rounded-full border px-3 py-1"
-                [class.border-green-700]="workOrder.priority === 'Low'"
-                [class.bg-green-950]="workOrder.priority === 'Low'"
-                [class.text-green-300]="workOrder.priority === 'Low'"
-                [class.border-yellow-700]="workOrder.priority === 'Medium'"
-                [class.bg-yellow-950]="workOrder.priority === 'Medium'"
-                [class.text-yellow-300]="workOrder.priority === 'Medium'"
-                [class.border-red-700]="workOrder.priority === 'High'"
-                [class.bg-red-950]="workOrder.priority === 'High'"
-                [class.text-red-300]="workOrder.priority === 'High'"
-                [class.border-purple-700]="workOrder.priority === 'Urgent'"
-                [class.bg-purple-950]="workOrder.priority === 'Urgent'"
-                [class.text-purple-300]="workOrder.priority === 'Urgent'"
-              >
-                {{ workOrder.priority }}
-              </span>
+              <div class="flex flex-wrap gap-2 text-xs font-medium">
+                <span class="rounded-full border border-zinc-700 px-3 py-1 text-zinc-300">
+                  {{ workOrder.status }}
+                </span>
+                <span
+                  class="rounded-full border px-3 py-1"
+                  [class.border-green-700]="workOrder.priority === 'Low'"
+                  [class.bg-green-950]="workOrder.priority === 'Low'"
+                  [class.text-green-300]="workOrder.priority === 'Low'"
+                  [class.border-yellow-700]="workOrder.priority === 'Medium'"
+                  [class.bg-yellow-950]="workOrder.priority === 'Medium'"
+                  [class.text-yellow-300]="workOrder.priority === 'Medium'"
+                  [class.border-red-700]="workOrder.priority === 'High'"
+                  [class.bg-red-950]="workOrder.priority === 'High'"
+                  [class.text-red-300]="workOrder.priority === 'High'"
+                  [class.border-purple-700]="workOrder.priority === 'Urgent'"
+                  [class.bg-purple-950]="workOrder.priority === 'Urgent'"
+                  [class.text-purple-300]="workOrder.priority === 'Urgent'"
+                >
+                  {{ workOrder.priority }}
+                </span>
+              </div>
             </div>
-          </div>
-        </li>
-      }
-    </ul>
+          </li>
+        }
+      </ul>
+    }
   </div>
 </main>

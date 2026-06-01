@@ -7,7 +7,11 @@
       Back to Work Orders
     </a>
 
-    @if (workOrder) {
+    @if (loading) {
+      <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
+        Loading work order...
+      </div>
+    } @else if (workOrder) {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/20">
         <div
           class="flex flex-col gap-4 border-b border-zinc-800 pb-6 sm:flex-row sm:items-start sm:justify-between"
@@ -85,7 +89,7 @@
       </div>
     } @else {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
-        Work order not found.
+        {{ errorMessage }}
       </div>
     }
   </div>

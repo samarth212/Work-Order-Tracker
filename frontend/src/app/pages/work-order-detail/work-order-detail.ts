@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { WorkOrder } from '../../models/work-order';
 import { WorkOrderService } from '../../services/work-order';
@@ -10,17 +10,39 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './work-order-detail.html',
   styleUrl: './work-order-detail.css',
 })
-export class WorkOrderDetail {
+export class WorkOrderDetail implements OnInit {
   workOrder: WorkOrder | undefined;
+  loading = true;
+  errorMessage = '';
   statuses = ['Open', 'In Progress', 'Completed'] as const;
 
   constructor(
     private route: ActivatedRoute,
     private workOrderService: WorkOrderService,
-  ) {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.workOrderService.getWorkOrderById(id).subscribe((workOrder) => {
-      this.workOrder = workOrder;
+    private changeDetectorRef: ChangeDetectorRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const id = Number(params.get('id'));
+
+      this.loading = true;
+      this.errorMessage = '';
+      this.workOrder = undefined;
+
+      this.workOrderService.getWorkOrderById(id).subscribe({
+        next: (workOrder) => {
+          this.workOrder = workOrder;
+          this.loading = false;
+          this.changeDetectorRef.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error loading work order:', error);
+          this.errorMessage = 'Work order not found.';
+          this.loading = false;
+          this.changeDetectorRef.detectChanges();
+        },
+      });
     });
   }
 }
