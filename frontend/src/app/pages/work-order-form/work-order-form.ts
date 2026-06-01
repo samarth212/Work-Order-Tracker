@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WorkOrder } from '../../models/work-order';
 import { WorkOrderService } from '../../services/work-order';
@@ -11,7 +11,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './work-order-form.css',
 })
 export class WorkOrderForm {
-  constructor(private workOrderService: WorkOrderService) {}
+  constructor(
+    private workOrderService: WorkOrderService,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) {}
 
   priorities = ['Low', 'Medium', 'High', 'Urgent'] as const;
 
@@ -20,21 +23,46 @@ export class WorkOrderForm {
 
   submitted = false;
   editingSubmittedWorkOrder = false;
+  submitting = false;
+  errorMessage = '';
 
   onSubmit() {
+    this.submitting = true;
+    this.errorMessage = '';
+
     if (this.editingSubmittedWorkOrder && this.submittedWorkOrder) {
       this.workOrderService
         .updateWorkOrder(this.submittedWorkOrder.id, this.newWorkOrder)
-        .subscribe((workOrder) => {
+        .subscribe({
+          next: (workOrder) => {
+            this.submittedWorkOrder = workOrder;
+            this.editingSubmittedWorkOrder = false;
+            this.submitted = true;
+            this.submitting = false;
+            this.changeDetectorRef.detectChanges();
+          },
+          error: (error) => {
+            console.error('Error updating work order:', error);
+            this.errorMessage = 'Unable to update work order.';
+            this.submitting = false;
+            this.changeDetectorRef.detectChanges();
+          },
+        });
+    } else {
+      this.workOrderService.addWorkOrder(this.newWorkOrder).subscribe({
+        next: (workOrder) => {
           this.submittedWorkOrder = workOrder;
           this.editingSubmittedWorkOrder = false;
           this.submitted = true;
-        });
-    } else {
-      this.workOrderService.addWorkOrder(this.newWorkOrder).subscribe((workOrder) => {
-        this.submittedWorkOrder = workOrder;
-        this.editingSubmittedWorkOrder = false;
-        this.submitted = true;
+          this.submitting = false;
+          this.changeDetectorRef.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error creating work order:', error);
+          this.errorMessage = 'Unable to create work order.';
+          this.submitting = false;
+          this.changeDetectorRef.detectChanges();
+        },
       });
     }
   }
@@ -43,6 +71,7 @@ export class WorkOrderForm {
     this.newWorkOrder = this.createEmptyWorkOrder();
     this.editingSubmittedWorkOrder = false;
     this.submitted = false;
+    this.errorMessage = '';
   }
 
   editSubmittedWorkOrder() {
@@ -62,6 +91,7 @@ export class WorkOrderForm {
     };
     this.editingSubmittedWorkOrder = true;
     this.submitted = false;
+    this.errorMessage = '';
   }
 
   private createEmptyWorkOrder(): Omit<WorkOrder, 'id'> {
