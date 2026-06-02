@@ -1,5 +1,7 @@
 using backend.Services;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,13 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
 
 builder.Services.AddSingleton<WorkOrderService>();
 
