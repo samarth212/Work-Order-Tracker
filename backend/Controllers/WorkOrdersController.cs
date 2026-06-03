@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
+using backend.DTOs;
 
 namespace backend.Controllers;
 
@@ -33,8 +34,19 @@ public class WorkOrdersController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<WorkOrder> AddWorkOrder(WorkOrder newWorkOrder)
+    public ActionResult<WorkOrder> AddWorkOrder(CreateWorkOrderDto newWorkOrderDto)
     {
+        WorkOrder newWorkOrder = new WorkOrder
+        {
+            Title = newWorkOrderDto.Title,
+            Description = newWorkOrderDto.Description,
+            Status = newWorkOrderDto.Status,
+            Priority = newWorkOrderDto.Priority,
+            AssignedTo = newWorkOrderDto.AssignedTo,
+            CreatedBy = newWorkOrderDto.CreatedBy,
+            DueDate = newWorkOrderDto.DueDate
+        };
+
         WorkOrder createdWorkOrder = workOrderService.Add(newWorkOrder);
 
         return Created($"/workorders/{createdWorkOrder.Id}", createdWorkOrder);
