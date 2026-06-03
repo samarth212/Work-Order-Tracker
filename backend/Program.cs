@@ -31,7 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 
-builder.Services.AddSingleton<WorkOrderService>();
+builder.Services.AddScoped<WorkOrderService>();
 
 var app = builder.Build();
 

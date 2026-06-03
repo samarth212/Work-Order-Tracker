@@ -1,9 +1,13 @@
 using backend.Models;
+using backend.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services;
 
 public class WorkOrderService {
 
+
+/* mock data
     private readonly List<WorkOrder> workOrders = new List<WorkOrder>
     {
         new WorkOrder
@@ -80,69 +84,70 @@ public class WorkOrderService {
         },
     };
 
-    public List<WorkOrder> GetAll(){
-        return workOrders;
+*/
+
+    private readonly AppDbContext context;
+
+    public WorkOrderService(AppDbContext context)
+    {
+        this.context = context;
     }
 
-    public WorkOrder? GetById(int id){
-        return workOrders.FirstOrDefault(t => t.Id == id);
+    public List<WorkOrder> GetAll()
+    {
+        return context.WorkOrders.ToList();
     }
 
-    public WorkOrder Add(WorkOrder newWorkOrder){
-        int nextId = workOrders.Count == 0 ? 1 : workOrders.Max(w => w.Id) + 1;
+    public WorkOrder? GetById(int id)
+    {
+        return context.WorkOrders.Find(id);
+    }
 
-        WorkOrder workOrder = new WorkOrder
+    public WorkOrder Add(WorkOrder newWorkOrder)
+    {
+        newWorkOrder.Id = 0;
+        newWorkOrder.CreatedAt = DateTime.Now;
+
+        context.WorkOrders.Add(newWorkOrder);
+        context.SaveChanges();
+
+        return newWorkOrder;
+    }
+
+    public WorkOrder? Update(int id, WorkOrder updatedWorkOrder)
+    {
+        WorkOrder? existingWorkOrder = context.WorkOrders.Find(id);
+
+        if (existingWorkOrder == null)
         {
-            Id = nextId,
-            Title = newWorkOrder.Title,
-            Description = newWorkOrder.Description,
-            Status = newWorkOrder.Status,
-            Priority = newWorkOrder.Priority,
-            AssignedTo = newWorkOrder.AssignedTo,
-            CreatedBy = newWorkOrder.CreatedBy,
-            CreatedAt = newWorkOrder.CreatedAt,
-            DueDate = newWorkOrder.DueDate,
-        };
-
-        workOrders.Add(workOrder);
-
-        return workOrder;
-    }
-
-    public WorkOrder? Update(int id, WorkOrder updatedWorkOrder){
-        int i = workOrders.FindIndex(w => w.Id == id);
-
-        if(i == -1){
             return null;
         }
 
-        WorkOrder workOrder = new WorkOrder
-        {
-            Id = id,
-            Title = updatedWorkOrder.Title,
-            Description = updatedWorkOrder.Description,
-            Status = updatedWorkOrder.Status,
-            Priority = updatedWorkOrder.Priority,
-            AssignedTo = updatedWorkOrder.AssignedTo,
-            CreatedBy = updatedWorkOrder.CreatedBy,
-            CreatedAt = updatedWorkOrder.CreatedAt,
-            DueDate = updatedWorkOrder.DueDate,
-        };
-    
-        workOrders[i] = workOrder;
+        existingWorkOrder.Title = updatedWorkOrder.Title;
+        existingWorkOrder.Description = updatedWorkOrder.Description;
+        existingWorkOrder.Status = updatedWorkOrder.Status;
+        existingWorkOrder.Priority = updatedWorkOrder.Priority;
+        existingWorkOrder.AssignedTo = updatedWorkOrder.AssignedTo;
+        existingWorkOrder.CreatedBy = updatedWorkOrder.CreatedBy;
+        existingWorkOrder.DueDate = updatedWorkOrder.DueDate;
 
-        return workOrder;
+        context.SaveChanges();
 
+        return existingWorkOrder;
     }
 
-    public bool Delete(int id){
-        WorkOrder? workOrder = GetById(id);
+    public bool Delete(int id)
+    {
+        WorkOrder? workOrder = context.WorkOrders.Find(id);
 
-        if(workOrder == null){
+        if (workOrder == null)
+        {
             return false;
         }
 
-        workOrders.Remove(workOrder);
+        context.WorkOrders.Remove(workOrder);
+        context.SaveChanges();
+
         return true;
     }
 }
