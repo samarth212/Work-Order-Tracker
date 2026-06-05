@@ -11,5 +11,4 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<WorkOrder> WorkOrders { get; set; }
-    public DbSet<WorkOrderActivity> WorkOrderActivities { get; set; }
 }
