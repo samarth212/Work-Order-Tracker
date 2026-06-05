@@ -123,6 +123,21 @@ public class WorkOrderService {
             return null;
         }
 
+        if (existingWorkOrder.Status != updatedWorkOrder.Status)
+        {
+            AddActivity(id, $"Samarth changed status from {existingWorkOrder.Status} to {updatedWorkOrder.Status}");
+        }
+
+        if (existingWorkOrder.Priority != updatedWorkOrder.Priority)
+        {
+            AddActivity(id, $"Samarth updated priority from {existingWorkOrder.Priority} to {updatedWorkOrder.Priority}");
+        }
+
+        if (existingWorkOrder.AssignedTo != updatedWorkOrder.AssignedTo)
+        {
+            AddActivity(id, $"Samarth reassigned work order from {existingWorkOrder.AssignedTo} to {updatedWorkOrder.AssignedTo}");
+        }
+
         existingWorkOrder.Title = updatedWorkOrder.Title;
         existingWorkOrder.Description = updatedWorkOrder.Description;
         existingWorkOrder.Status = updatedWorkOrder.Status;
@@ -134,6 +149,14 @@ public class WorkOrderService {
         context.SaveChanges();
 
         return existingWorkOrder;
+    }
+
+    public List<WorkOrderActivity> GetActivities(int workOrderId)
+    {
+        return context.WorkOrderActivities
+            .Where(activity => activity.WorkOrderId == workOrderId)
+            .OrderByDescending(activity => activity.CreatedAt)
+            .ToList();
     }
 
     public bool Delete(int id)
@@ -149,5 +172,15 @@ public class WorkOrderService {
         context.SaveChanges();
 
         return true;
+    }
+
+    private void AddActivity(int workOrderId, string message)
+    {
+        context.WorkOrderActivities.Add(new WorkOrderActivity
+        {
+            WorkOrderId = workOrderId,
+            Message = message,
+            CreatedAt = DateTime.Now,
+        });
     }
 }
