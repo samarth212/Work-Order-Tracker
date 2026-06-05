@@ -159,6 +159,33 @@ public class WorkOrderService {
             .ToList();
     }
 
+    public List<WorkOrderComment> GetComments(int workOrderId)
+    {
+        return context.WorkOrderComments
+            .Where(comment => comment.WorkOrderId == workOrderId)
+            .OrderBy(comment => comment.CreatedAt)
+            .ToList();
+    }
+
+    public WorkOrderComment? AddComment(int workOrderId, WorkOrderComment newComment)
+    {
+        bool workOrderExists = context.WorkOrders.Any(workOrder => workOrder.Id == workOrderId);
+
+        if (!workOrderExists)
+        {
+            return null;
+        }
+
+        newComment.Id = 0;
+        newComment.WorkOrderId = workOrderId;
+        newComment.CreatedAt = DateTime.Now;
+
+        context.WorkOrderComments.Add(newComment);
+        context.SaveChanges();
+
+        return newComment;
+    }
+
     public bool Delete(int id)
     {
         WorkOrder? workOrder = context.WorkOrders.Find(id);

@@ -46,6 +46,19 @@ public class WorkOrdersController : ControllerBase
         return Ok(workOrderService.GetActivities(id));
     }
 
+    [HttpGet("{id}/comments")]
+    public ActionResult<List<WorkOrderComment>> GetWorkOrderComments(int id)
+    {
+        WorkOrder? workOrder = workOrderService.GetById(id);
+
+        if (workOrder == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(workOrderService.GetComments(id));
+    }
+
     [HttpPost]
     public ActionResult<WorkOrder> AddWorkOrder(CreateWorkOrderDto newWorkOrderDto)
     {
@@ -63,6 +76,25 @@ public class WorkOrdersController : ControllerBase
         WorkOrder createdWorkOrder = workOrderService.Add(newWorkOrder);
 
         return Created($"/workorders/{createdWorkOrder.Id}", createdWorkOrder);
+    }
+
+    [HttpPost("{id}/comments")]
+    public ActionResult<WorkOrderComment> AddWorkOrderComment(int id, CreateWorkOrderCommentDto newCommentDto)
+    {
+        WorkOrderComment newComment = new WorkOrderComment
+        {
+            Author = newCommentDto.Author,
+            Message = newCommentDto.Message
+        };
+
+        WorkOrderComment? createdComment = workOrderService.AddComment(id, newComment);
+
+        if (createdComment == null)
+        {
+            return NotFound();
+        }
+
+        return Created($"/workorders/{id}/comments/{createdComment.Id}", createdComment);
     }
 
     [HttpPut("{id}")]

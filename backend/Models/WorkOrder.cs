@@ -18,4 +18,7 @@ public class WorkOrder
 
     [JsonIgnore]
     public List<WorkOrderActivity> Activities { get; set; } = new();
+
+    [JsonIgnore]
+    public List<WorkOrderComment> Comments { get; set; } = new();
 }
