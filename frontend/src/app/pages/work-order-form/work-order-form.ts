@@ -16,7 +16,6 @@ export class WorkOrderForm {
     private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
-  statuses = ['Open', 'Assigned', 'In Progress', 'Waiting on Parts', 'Completed', 'Closed'] as const;
   priorities = ['Low', 'Medium', 'High', 'Urgent'] as const;
 
   newWorkOrder: Omit<WorkOrder, 'id'> = this.createEmptyWorkOrder();
@@ -99,7 +98,7 @@ export class WorkOrderForm {
     return {
       title: '',
       description: '',
-      status: this.statuses[0],
+      status: 'Open',
       priority: this.priorities[0],
       assignedTo: '',
       createdBy: '',

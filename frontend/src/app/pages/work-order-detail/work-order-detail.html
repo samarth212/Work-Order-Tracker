@@ -244,27 +244,6 @@
             </aside>
           </div>
         }
-
-        <section class="mt-6 border-t border-zinc-800 pt-6">
-          <h3 class="text-sm font-semibold uppercase tracking-wide text-zinc-500">
-            Activity History
-          </h3>
-
-          @if (activities.length > 0) {
-            <ul class="mt-4 space-y-3">
-              @for (activity of activities; track activity.id) {
-                <li class="rounded-md border border-zinc-800 bg-zinc-950/60 p-4">
-                  <p class="text-sm text-zinc-200">{{ activity.message }}</p>
-                  <p class="mt-2 text-xs text-zinc-500">
-                    {{ activity.createdAt | date: 'yyyy-MM-dd h:mm a' }}
-                  </p>
-                </li>
-              }
-            </ul>
-          } @else {
-            <p class="mt-4 text-sm text-zinc-400">No activity yet.</p>
-          }
-        </section>
       </div>
     } @else {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
