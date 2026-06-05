@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { WorkOrder } from '../../models/work-order';
 import { WorkOrderActivity } from '../../models/work-order-activity';
+import { WorkOrderComment } from '../../models/work-order-comment';
 import { WorkOrderService } from '../../services/work-order';
 import { FormsModule } from '@angular/forms';
 
@@ -15,13 +16,20 @@ import { FormsModule } from '@angular/forms';
 export class WorkOrderDetail implements OnInit {
   workOrder: WorkOrder | undefined;
   activities: WorkOrderActivity[] = [];
+  comments: WorkOrderComment[] = [];
   editWorkOrder: Omit<WorkOrder, 'id'> | undefined;
+  newComment = {
+    author: 'Samarth',
+    message: '',
+  };
   loading = true;
   errorMessage = '';
   actionErrorMessage = '';
+  commentErrorMessage = '';
   editing = false;
   saving = false;
   deleting = false;
+  addingComment = false;
   statuses = ['Open', 'Assigned', 'In Progress', 'Waiting on Parts', 'Completed', 'Closed'] as const;
   priorities = ['Low', 'Medium', 'High', 'Urgent'] as const;
 
@@ -39,9 +47,15 @@ export class WorkOrderDetail implements OnInit {
       this.loading = true;
       this.errorMessage = '';
       this.actionErrorMessage = '';
+      this.commentErrorMessage = '';
       this.workOrder = undefined;
       this.activities = [];
+      this.comments = [];
       this.editWorkOrder = undefined;
+      this.newComment = {
+        author: 'Samarth',
+        message: '',
+      };
       this.editing = false;
 
       this.workOrderService.getWorkOrderById(id).subscribe({
@@ -49,6 +63,7 @@ export class WorkOrderDetail implements OnInit {
           this.workOrder = workOrder;
           this.loading = false;
           this.loadActivities(workOrder.id);
+          this.loadComments(workOrder.id);
           this.changeDetectorRef.detectChanges();
         },
         error: (error) => {
@@ -123,6 +138,52 @@ export class WorkOrderDetail implements OnInit {
       error: (error) => {
         console.error('Error loading work order activities:', error);
         this.activities = [];
+        this.changeDetectorRef.detectChanges();
+      },
+    });
+  }
+
+  private loadComments(workOrderId: number): void {
+    this.commentErrorMessage = '';
+
+    this.workOrderService.getWorkOrderComments(workOrderId).subscribe({
+      next: (comments) => {
+        this.comments = comments;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading work order comments:', error);
+        this.comments = [];
+        this.commentErrorMessage = 'Unable to load comments.';
+        this.changeDetectorRef.detectChanges();
+      },
+    });
+  }
+
+  addComment(): void {
+    if (!this.workOrder || !this.newComment.message.trim()) {
+      return;
+    }
+
+    const comment = {
+      author: this.newComment.author.trim() || 'Samarth',
+      message: this.newComment.message.trim(),
+    };
+
+    this.addingComment = true;
+    this.commentErrorMessage = '';
+
+    this.workOrderService.addWorkOrderComment(this.workOrder.id, comment).subscribe({
+      next: () => {
+        this.newComment.message = '';
+        this.addingComment = false;
+        this.loadComments(this.workOrder!.id);
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error adding work order comment:', error);
+        this.commentErrorMessage = 'Unable to add comment.';
+        this.addingComment = false;
         this.changeDetectorRef.detectChanges();
       },
     });

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WorkOrder } from '../models/work-order';
 import { WorkOrderActivity } from '../models/work-order-activity';
+import { WorkOrderComment } from '../models/work-order-comment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -21,6 +22,17 @@ export class WorkOrderService {
 
   getWorkOrderActivities(id: number): Observable<WorkOrderActivity[]> {
     return this.http.get<WorkOrderActivity[]>(`${this.apiUrl}/${id}/activities`);
+  }
+
+  getWorkOrderComments(id: number): Observable<WorkOrderComment[]> {
+    return this.http.get<WorkOrderComment[]>(`${this.apiUrl}/${id}/comments`);
+  }
+
+  addWorkOrderComment(
+    id: number,
+    comment: Pick<WorkOrderComment, 'author' | 'message'>,
+  ): Observable<WorkOrderComment> {
+    return this.http.post<WorkOrderComment>(`${this.apiUrl}/${id}/comments`, comment);
   }
 
   addWorkOrder(workOrder: Omit<WorkOrder, 'id'>): Observable<WorkOrder> {
