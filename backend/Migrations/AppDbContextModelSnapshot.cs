@@ -64,63 +64,6 @@ namespace backend.Migrations
 
                     b.ToTable("WorkOrders");
                 });
-
-            modelBuilder.Entity("backend.Models.WorkOrderActivity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ChangedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FieldChanged")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NewValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OldValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WorkOrderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkOrderId");
-
-                    b.ToTable("WorkOrderActivities");
-                });
-
-            modelBuilder.Entity("backend.Models.WorkOrderActivity", b =>
-                {
-                    b.HasOne("backend.Models.WorkOrder", "WorkOrder")
-                        .WithMany("Activities")
-                        .HasForeignKey("WorkOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WorkOrder");
-                });
-
-            modelBuilder.Entity("backend.Models.WorkOrder", b =>
-                {
-                    b.Navigation("Activities");
-                });
 #pragma warning restore 612, 618
         }
     }
