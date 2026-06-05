@@ -33,6 +33,19 @@ public class WorkOrdersController : ControllerBase
         return Ok(workOrder);
     }
 
+    [HttpGet("{id}/activities")]
+    public ActionResult<List<WorkOrderActivity>> GetWorkOrderActivities(int id)
+    {
+        WorkOrder? workOrder = workOrderService.GetById(id);
+
+        if (workOrder == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(workOrderService.GetActivities(id));
+    }
+
     [HttpPost]
     public ActionResult<WorkOrder> AddWorkOrder(CreateWorkOrderDto newWorkOrderDto)
     {
@@ -53,8 +66,19 @@ public class WorkOrdersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public ActionResult<WorkOrder> UpdateWorkOrder(int id, WorkOrder updatedWorkOrder)
+    public ActionResult<WorkOrder> UpdateWorkOrder(int id, CreateWorkOrderDto updatedWorkOrderDto)
     {
+        WorkOrder updatedWorkOrder = new WorkOrder
+        {
+            Title = updatedWorkOrderDto.Title,
+            Description = updatedWorkOrderDto.Description,
+            Status = updatedWorkOrderDto.Status,
+            Priority = updatedWorkOrderDto.Priority,
+            AssignedTo = updatedWorkOrderDto.AssignedTo,
+            CreatedBy = updatedWorkOrderDto.CreatedBy,
+            DueDate = updatedWorkOrderDto.DueDate
+        };
+
         WorkOrder? workOrder = workOrderService.Update(id, updatedWorkOrder);
 
         if (workOrder == null)
