@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace backend.Models;
 
 public class WorkOrder
@@ -14,5 +16,6 @@ public class WorkOrder
     public DateTime CreatedAt { get; set; }
     public DateTime DueDate { get; set; }
 
+    [JsonIgnore]
     public List<WorkOrderActivity> Activities { get; set; } = new();
 }
