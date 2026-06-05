@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { WorkOrder } from '../models/work-order';
+import { WorkOrderActivity } from '../models/work-order-activity';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -16,6 +17,10 @@ export class WorkOrderService {
 
   getWorkOrderById(id: number): Observable<WorkOrder> {
     return this.http.get<WorkOrder>(`${this.apiUrl}/${id}`);
+  }
+
+  getWorkOrderActivities(id: number): Observable<WorkOrderActivity[]> {
+    return this.http.get<WorkOrderActivity[]>(`${this.apiUrl}/${id}/activities`);
   }
 
   addWorkOrder(workOrder: Omit<WorkOrder, 'id'>): Observable<WorkOrder> {

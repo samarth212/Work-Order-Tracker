@@ -1,17 +1,20 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { WorkOrder } from '../../models/work-order';
+import { WorkOrderActivity } from '../../models/work-order-activity';
 import { WorkOrderService } from '../../services/work-order';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-work-order-detail',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, DatePipe],
   templateUrl: './work-order-detail.html',
   styleUrl: './work-order-detail.css',
 })
 export class WorkOrderDetail implements OnInit {
   workOrder: WorkOrder | undefined;
+  activities: WorkOrderActivity[] = [];
   editWorkOrder: Omit<WorkOrder, 'id'> | undefined;
   loading = true;
   errorMessage = '';
@@ -19,7 +22,7 @@ export class WorkOrderDetail implements OnInit {
   editing = false;
   saving = false;
   deleting = false;
-  statuses = ['Open', 'In Progress', 'Completed'] as const;
+  statuses = ['Open', 'Assigned', 'In Progress', 'Waiting on Parts', 'Completed', 'Closed'] as const;
   priorities = ['Low', 'Medium', 'High', 'Urgent'] as const;
 
   constructor(
@@ -37,6 +40,7 @@ export class WorkOrderDetail implements OnInit {
       this.errorMessage = '';
       this.actionErrorMessage = '';
       this.workOrder = undefined;
+      this.activities = [];
       this.editWorkOrder = undefined;
       this.editing = false;
 
@@ -44,6 +48,7 @@ export class WorkOrderDetail implements OnInit {
         next: (workOrder) => {
           this.workOrder = workOrder;
           this.loading = false;
+          this.loadActivities(workOrder.id);
           this.changeDetectorRef.detectChanges();
         },
         error: (error) => {
@@ -97,12 +102,27 @@ export class WorkOrderDetail implements OnInit {
         this.editWorkOrder = undefined;
         this.editing = false;
         this.saving = false;
+        this.loadActivities(workOrder.id);
         this.changeDetectorRef.detectChanges();
       },
       error: (error) => {
         console.error('Error updating work order:', error);
         this.actionErrorMessage = 'Unable to update work order.';
         this.saving = false;
+        this.changeDetectorRef.detectChanges();
+      },
+    });
+  }
+
+  private loadActivities(workOrderId: number): void {
+    this.workOrderService.getWorkOrderActivities(workOrderId).subscribe({
+      next: (activities) => {
+        this.activities = activities;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading work order activities:', error);
+        this.activities = [];
         this.changeDetectorRef.detectChanges();
       },
     });

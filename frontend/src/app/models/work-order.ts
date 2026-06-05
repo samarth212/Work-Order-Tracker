@@ -2,7 +2,7 @@ export interface WorkOrder {
   id: number;
   title: string;
   description: string;
-  status: 'Open' | 'In Progress' | 'Completed';
+  status: 'Open' | 'Assigned' | 'In Progress' | 'Waiting on Parts' | 'Completed' | 'Closed';
   priority: 'Low' | 'Medium' | 'High' | 'Urgent';
   assignedTo: string;
   createdBy: string;
