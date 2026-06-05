@@ -7,11 +7,11 @@
       Back to Work Orders
     </a>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
         Loading work order...
       </div>
-    } @else if (workOrder) {
+    } @else if (workOrder(); as workOrder) {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/20">
         <div
           class="flex flex-col gap-4 border-b border-zinc-800 pb-6 sm:flex-row sm:items-start sm:justify-between"
@@ -66,9 +66,9 @@
           </div>
         </div>
 
-        @if (actionErrorMessage) {
+        @if (actionErrorMessage()) {
           <div class="mt-6 rounded-md border border-red-900/70 bg-red-950/30 p-3 text-sm text-red-200">
-            {{ actionErrorMessage }}
+            {{ actionErrorMessage() }}
           </div>
         }
 
@@ -250,9 +250,9 @@
             Activity History
           </h3>
 
-          @if (activities.length > 0) {
+          @if (activities().length > 0) {
             <ul class="mt-4 space-y-3">
-              @for (activity of activities; track activity.id) {
+              @for (activity of activities(); track activity.id) {
                 <li class="rounded-md border border-zinc-800 bg-zinc-950/60 p-4">
                   <p class="text-sm text-zinc-200">{{ activity.message }}</p>
                   <p class="mt-2 text-xs text-zinc-500">
@@ -271,15 +271,15 @@
             Comments
           </h3>
 
-          @if (commentErrorMessage) {
+          @if (commentErrorMessage()) {
             <div class="mt-4 rounded-md border border-red-900/70 bg-red-950/30 p-3 text-sm text-red-200">
-              {{ commentErrorMessage }}
+              {{ commentErrorMessage() }}
             </div>
           }
 
-          @if (comments.length > 0) {
+          @if (comments().length > 0) {
             <ul class="mt-4 space-y-3">
-              @for (comment of comments; track comment.id) {
+              @for (comment of comments(); track comment.id) {
                 <li class="rounded-md border border-zinc-800 bg-zinc-950/60 p-4">
                   <div class="flex flex-wrap items-center gap-2">
                     <p class="text-sm font-semibold text-white">{{ comment.author }}</p>
@@ -335,7 +335,7 @@
       </div>
     } @else {
       <div class="rounded-lg border border-zinc-800 bg-zinc-900/70 p-6 text-zinc-300">
-        {{ errorMessage }}
+        {{ errorMessage() }}
       </div>
     }
   </div>
