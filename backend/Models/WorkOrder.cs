@@ -13,4 +13,6 @@ public class WorkOrder
 
     public DateTime CreatedAt { get; set; }
     public DateTime DueDate { get; set; }
+
+    public List<WorkOrderActivity> Activities { get; set; } = new();
 }
