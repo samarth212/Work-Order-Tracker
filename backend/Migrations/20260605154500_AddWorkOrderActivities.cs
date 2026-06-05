@@ -11,31 +11,42 @@ namespace backend.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "WorkOrderActivities",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    WorkOrderId = table.Column<int>(type: "int", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WorkOrderActivities", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WorkOrderActivities_WorkOrders_WorkOrderId",
-                        column: x => x.WorkOrderId,
-                        principalTable: "WorkOrders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.Sql("""
+                IF OBJECT_ID(N'[WorkOrderActivities]', N'U') IS NULL
+                BEGIN
+                    CREATE TABLE [WorkOrderActivities] (
+                        [Id] int NOT NULL IDENTITY,
+                        [WorkOrderId] int NOT NULL,
+                        [Message] nvarchar(max) NOT NULL,
+                        [CreatedAt] datetime2 NOT NULL,
+                        CONSTRAINT [PK_WorkOrderActivities] PRIMARY KEY ([Id]),
+                        CONSTRAINT [FK_WorkOrderActivities_WorkOrders_WorkOrderId] FOREIGN KEY ([WorkOrderId]) REFERENCES [WorkOrders] ([Id]) ON DELETE CASCADE
+                    );
+                END
 
-            migrationBuilder.CreateIndex(
-                name: "IX_WorkOrderActivities_WorkOrderId",
-                table: "WorkOrderActivities",
-                column: "WorkOrderId");
+                IF COL_LENGTH(N'WorkOrderActivities', N'ChangedBy') IS NOT NULL
+                    ALTER TABLE [WorkOrderActivities] DROP COLUMN [ChangedBy];
+
+                IF COL_LENGTH(N'WorkOrderActivities', N'FieldChanged') IS NOT NULL
+                    ALTER TABLE [WorkOrderActivities] DROP COLUMN [FieldChanged];
+
+                IF COL_LENGTH(N'WorkOrderActivities', N'OldValue') IS NOT NULL
+                    ALTER TABLE [WorkOrderActivities] DROP COLUMN [OldValue];
+
+                IF COL_LENGTH(N'WorkOrderActivities', N'NewValue') IS NOT NULL
+                    ALTER TABLE [WorkOrderActivities] DROP COLUMN [NewValue];
+
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = N'IX_WorkOrderActivities_WorkOrderId'
+                      AND object_id = OBJECT_ID(N'[WorkOrderActivities]')
+                )
+                BEGIN
+                    CREATE INDEX [IX_WorkOrderActivities_WorkOrderId]
+                    ON [WorkOrderActivities] ([WorkOrderId]);
+                END
+                """);
         }
 
         /// <inheritdoc />
