@@ -123,43 +123,6 @@ public class WorkOrderService {
             return null;
         }
 
-        string changedBy = string.IsNullOrWhiteSpace(updatedWorkOrder.CreatedBy)
-            ? "Samarth"
-            : updatedWorkOrder.CreatedBy;
-
-        if (existingWorkOrder.Status != updatedWorkOrder.Status)
-        {
-            AddActivity(
-                id,
-                $"{changedBy} changed status from {existingWorkOrder.Status} to {updatedWorkOrder.Status}",
-                changedBy,
-                "Status",
-                existingWorkOrder.Status,
-                updatedWorkOrder.Status);
-        }
-
-        if (existingWorkOrder.Priority != updatedWorkOrder.Priority)
-        {
-            AddActivity(
-                id,
-                $"{changedBy} updated priority from {existingWorkOrder.Priority} to {updatedWorkOrder.Priority}",
-                changedBy,
-                "Priority",
-                existingWorkOrder.Priority,
-                updatedWorkOrder.Priority);
-        }
-
-        if (existingWorkOrder.AssignedTo != updatedWorkOrder.AssignedTo)
-        {
-            AddActivity(
-                id,
-                $"{changedBy} reassigned work order from {existingWorkOrder.AssignedTo} to {updatedWorkOrder.AssignedTo}",
-                changedBy,
-                "AssignedTo",
-                existingWorkOrder.AssignedTo,
-                updatedWorkOrder.AssignedTo);
-        }
-
         existingWorkOrder.Title = updatedWorkOrder.Title;
         existingWorkOrder.Description = updatedWorkOrder.Description;
         existingWorkOrder.Status = updatedWorkOrder.Status;
@@ -171,14 +134,6 @@ public class WorkOrderService {
         context.SaveChanges();
 
         return existingWorkOrder;
-    }
-
-    public List<WorkOrderActivity> GetActivities(int workOrderId)
-    {
-        return context.WorkOrderActivities
-            .Where(activity => activity.WorkOrderId == workOrderId)
-            .OrderByDescending(activity => activity.CreatedAt)
-            .ToList();
     }
 
     public bool Delete(int id)
@@ -194,25 +149,5 @@ public class WorkOrderService {
         context.SaveChanges();
 
         return true;
-    }
-
-    private void AddActivity(
-        int workOrderId,
-        string message,
-        string changedBy,
-        string fieldChanged,
-        string oldValue,
-        string newValue)
-    {
-        context.WorkOrderActivities.Add(new WorkOrderActivity
-        {
-            WorkOrderId = workOrderId,
-            Message = message,
-            ChangedBy = changedBy,
-            FieldChanged = fieldChanged,
-            OldValue = oldValue,
-            NewValue = newValue,
-            CreatedAt = DateTime.Now,
-        });
     }
 }
